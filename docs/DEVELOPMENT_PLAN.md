@@ -1,102 +1,131 @@
-# Icebreaker MCP Server - Development Plan
+# Icebreaker MCP Server - Senior Data Partner Development Plan
 
 ## Overview
 
-This development plan outlines the phased implementation of the Icebreaker Snowflake MCP Agent, mapping directly to the Tiers defined in the roadmap.md. Each phase specifies what will be reused from the official Snowflake MCP, what needs to be built from scratch, dependencies, and potential risks.
+This development plan outlines the phased implementation of Icebreaker as a **Senior Data Partner** - an intelligent agent that bridges the gap between raw Snowflake capabilities and high-value, strategic insights that typically require a human senior architect/analyst.
+
+**Strategic Pivot**: Rather than being an "admin bot," Icebreaker provides contextual understanding, architectural insight, proactive optimization, and business semantics that transform how analysts interact with their data warehouse.
+
+**Architecture**: Smart Wrapper foundation that builds upon official Snowflake MCP capabilities while adding sophisticated analytical and reasoning layers.
 
 ## Project Timeline Overview
 
-- **Phase 1 (Weeks 1-4)**: Foundation & Tier 1 - Foundational Data Access & Discovery
-- **Phase 2 (Weeks 5-8)**: Tier 2 - Operational Management (DataOps)
-- **Phase 3 (Weeks 9-12)**: Tier 3 - Data Engineering & Movement
-- **Phase 4 (Weeks 13-16)**: Tier 4 - High-Level Intelligent Actions
+- **Phase 1 (Weeks 1-4)**: Foundation & Tier 1 - Strategic Intelligence Foundation
+- **Phase 2 (Weeks 5-8)**: Tier 2 - Contextual Understanding & Business Semantics
+- **Phase 3 (Weeks 9-12)**: Tier 3 - Architectural Insight & Pattern Recognition
+- **Phase 4 (Weeks 13-16)**: Tier 4 - Predictive Analytics & Strategic Guidance
 - **Phase 5 (Weeks 17-20)**: Integration, Testing & Production Readiness
 
 ---
 
-## Phase 1: Foundation & Tier 1 - Foundational Data Access & Discovery
+## Phase 1: Foundation & Tier 1 - Strategic Intelligence Foundation
 
 **Duration**: 4 weeks
-**Objective**: Establish core infrastructure and basic data discovery capabilities
-**Priority**: High - Forms the foundation for all subsequent tiers
+**Objective**: Establish Smart Wrapper architecture with deep analytics capabilities that enable Senior Data Partner insights
+**Priority**: Critical - Foundation for all strategic intelligence capabilities
 
-### Week 1: Project Setup & Core Infrastructure
+### Key Focus: From Admin Tools to Intelligence Layer
 
-#### What We'll Reuse from Official MCP
-- ✅ **SnowflakeService Class**: Complete connection management from `mcp/mcp_server_snowflake/server.py`
-- ✅ **Environment Detection**: `is_running_in_spcs_container()`, `get_spcs_container_token()` from `mcp/mcp_server_snowflake/environment.py`
-- ✅ **Base Exception Handling**: `SnowflakeException` framework from `mcp/mcp_server_snowflake/utils.py`
+The official Snowflake MCP provides excellent "power admin" capabilities. Our Tier 1 builds the **strategic intelligence foundation** that transforms these basic capabilities into Senior Data Partner insights.
 
-#### What We'll Build from Scratch
-- ❌ **IcebreakerConnectionManager**: Wrapper around SnowflakeService with safety mode
-- ❌ **SafetyChecker**: Core safety validation framework
-- ❌ **Project Structure**: Set up `icebreaker_mcp/` package structure
-- ❌ **Configuration System**: Extended YAML configuration with Icebreaker settings
+### Week 1: Smart Wrapper Architecture Setup
+
+#### What We'll Depend On (Official Snowflake MCP)
+- ✅ **SnowflakeService Class**: Complete connection management from `mcp-server-snowflake` package
+- ✅ **Official Tool Implementations**: Object Manager, Query Manager, Semantic Manager, Cortex Services
+- ✅ **Authentication & Transport**: All official authentication methods and MCP transport handling
+- ✅ **Configuration System**: Official YAML-based service configuration
+
+#### What We'll Build (Icebreaker Unique Value)
+- ✅ **SnowflakeWrapperService**: Main orchestrating service for wrapper integration
+- ✅ **ConfigAdapter**: Bridges Icebreaker config to official Snowflake MCP format
+- ✅ **ConnectionBridge**: Manages connection sharing between Icebreaker and official components
+- ✅ **ToolRegistry**: Dynamic tool registration with safety validation
 
 ```python
-# Week 1 Deliverables
-icebreaker_mcp/
-├── __init__.py
-├── core/
-│   ├── connection.py          # IcebreakerConnectionManager
-│   ├── config.py             # Extended configuration
-│   ├── safety.py             # SafetyChecker base class
-│   └── errors.py             # Icebreaker-specific exceptions
-├── server.py                 # FastMCP server entry point
-└── config/
-    ├── services.yaml         # Service specifications
-    └── safety_rules.yaml     # Safety rule definitions
+# Week 1 Deliverables - Smart Wrapper Architecture
+src/icebreaker/services/snowflake_wrapper/
+├── __init__.py               # Module exports
+├── service_manager.py        # SnowflakeWrapperService - main orchestrator
+├── config_adapter.py         # ConfigAdapter - bridges configuration formats
+├── connection_bridge.py      # ConnectionBridge - manages connection sharing
+└── tool_registry.py         # ToolRegistry - dynamic tool registration
 ```
 
 #### Dependencies & Installation
 ```bash
-# Core dependencies (reused from official MCP)
-pip install fastmcp>=2.8.1
-pip install snowflake-connector-python>=4.0.0
-pip install sqlglot>=27.8.0
+# Official Snowflake MCP (foundation)
+pip install mcp-server-snowflake>=1.3.5
+pip install fastmcp>=2.12.4
 
-# Icebreaker-specific additions
-pip install pyyaml>=6.0.2
-pip install structlog>=23.0.0
+# Icebreaker intelligence layer (extensibility)
+pip install sqlglot>=27.8.0      # Advanced SQL parsing and validation
+pip install pydantic>=2.7.0      # Configuration validation
+pip install structlog>=23.0.0    # Structured logging
 ```
 
 #### Risk Mitigation
-- **Risk**: Connection issues with SnowflakeService
-- **Mitigation**: Implement fallback connection logic and comprehensive error handling
-- **Risk**: Configuration management complexity
-- **Mitigation**: Use Pydantic models for validation and provide clear error messages
+- **Risk**: Official package API changes breaking integration
+- **Mitigation**: Adapter pattern, version pinning, comprehensive integration testing
+- **Risk**: Configuration incompatibility between systems
+- **Mitigation**: ConfigAdapter with validation and graceful fallback handling
 
-### Week 2: Basic SQL Execution with Safety
+### Week 2: Advanced Analytics Foundation
 
-#### What We'll Reuse from Official MCP
-- ✅ **SQL Parsing**: `get_statement_type()` and `validate_sql_type()` from `mcp/mcp_server_snowflake/query_manager/tools.py`
-- ✅ **Connection Context**: `get_connection()` context manager
-- ✅ **Query Execution**: Base `run_query()` function
+#### Critical Gap Identified: Official MCP Missing Strategic Data Sources
 
-#### What We'll Build from Scratch
-- ❌ **SafeQueryExecutor**: SQL execution with automatic limits and safety validation
-- ❌ **QueryValidator**: Enhanced SQL validation beyond basic type checking
-- ❌ **ResultFormatter**: Consistent result formatting across all query tools
-- ❌ **Basic Discovery Tools**: First implementation of discovery tools
+**What Official MCP Lacks:**
+- ❌ **ACCOUNT_USAGE schema access** - No usage analytics or performance insights
+- ❌ **INFORMATION_SCHEMA deep access** - Limited to basic object listing
+- ❌ **Query history analysis** - Cannot analyze usage patterns or performance trends
+- ❌ **Execution plan analysis** - No optimization capabilities
+
+#### What We'll Build (Senior Data Partner Foundation)
+- ✅ **Usage Analytics Engine**: Deep integration with ACCOUNT_USAGE schema views
+- ✅ **Query Pattern Analysis**: Historical query analysis and trend detection
+- ✅ **Performance Intelligence**: Query execution analysis and optimization insights
+- ✅ **Cost Analytics**: Warehouse usage and cost optimization recommendations
 
 ```python
-# Week 2 Core Implementation
-class SafeQueryExecutor:
-    def execute_read_query(self, sql: str, auto_limit: int = 10000) -> dict:
-        # Reuse: base_run_query() from official MCP
-        # New: automatic LIMIT enforcement, safety validation
-        pass
+# Week 2 Senior Data Partner Foundation
+class UsageAnalyticsEngine:
+    def analyze_table_popularity(self, days: int = 30) -> dict:
+        """Access ACCOUNT_USAGE.TABLE_STORAGE_METRICS + QUERY_HISTORY"""
+        # Identify most/least used tables
+        # Detect access patterns and trends
+        # Recommend archival strategies
 
-class QueryValidator:
-    def validate_read_query(self, sql: str, context: dict) -> ValidationResult:
-        # Reuse: sqlglot parsing from official MCP
-        # New: Icebreaker-specific safety rules
-        pass
+    def analyze_query_patterns(self) -> dict:
+        """Extract insights from ACCOUNT_USAGE.QUERY_HISTORY"""
+        # Identify common query patterns
+        # Detect performance bottlenecks
+        # Suggest optimization opportunities
+
+class BusinessContextExtractor:
+    def discover_business_concepts(self) -> dict:
+        """Extract business meaning from technical object names"""
+        # Analyze naming patterns and conventions
+        # Map cryptic names to business concepts
+        # Build semantic understanding
+```
+
+```python
+# Week 2 Tool Registration Pattern
+class ToolRegistry:
+    def _wrap_query_manager_tools(self):
+        def enhanced_query_wrapper(*args, **kwargs):
+            sql = kwargs.get("sql") or (args[0] if args else "")
+            if sql:
+                # Apply Icebreaker's advanced validation
+                is_valid, issues = self.query_validator.validate_query(sql)
+                if not is_valid:
+                    raise ValueError(f"Query validation failed: {issues}")
+            return original_method(*args, **kwargs)
 ```
 
 #### Dependencies & Privileges Required
 ```sql
--- Minimum Snowflake privileges for Tier 1
+-- Minimum Snowflake privileges (official requirements)
 GRANT USAGE ON WAREHOUSE TO ICEBREAKER_ROLE;
 GRANT USAGE ON DATABASE TO ICEBREAKER_ROLE;
 GRANT USAGE ON SCHEMA TO ICEBREAKER_ROLE;
@@ -105,124 +134,183 @@ GRANT SELECT ON FUTURE VIEWS IN SCHEMA TO ICEBREAKER_ROLE;
 ```
 
 #### Risk Mitigation
-- **Risk**: SQL injection vulnerabilities
-- **Mitigation**: Comprehensive input validation and parameterized queries
-- **Risk**: Performance issues with large result sets
-- **Mitigation**: Automatic LIMIT enforcement and result size monitoring
+- **Risk**: Safety validation breaking official tool functionality
+- **Mitigation**: Non-blocking validation, clear error messages, graceful degradation
+- **Risk**: Permission system conflicts with official tool permissions
+- **Mitigation**: Layered permission system, respecting official permissions first
 
-### Week 3: Discovery Tools Implementation
+### Week 3: Senior Data Partner Tool Development
 
-#### What We'll Reuse from Official MCP
-- ✅ **Object Manager Tools**: Database and schema listing capabilities
-- ✅ **Metadata Queries**: Basic object discovery functionality
-- ✅ **DDL Extraction**: `GET_DDL()` functionality
+#### Intelligence Tools That Bridge the Gap
 
-#### What We'll Build from Scratch
-- ❌ **Enhanced Discovery Tools**: All Tier 1 tools with metadata enrichment
-- ❌ **Search Capabilities**: Pattern-based object search functionality
-- ❌ **Metadata Enrichment**: Additional metadata beyond basic object information
+**Business Concept Discovery Tools:**
+- ✅ **find_business_concept(concept)**: Search metadata, comments, and query text for business concepts
+- ✅ **map_technical_to_business()**: Translate cryptic names to business terminology
+- ✅ **analyze_naming_conventions()**: Identify patterns and suggest improvements
+
+**Usage Pattern Intelligence Tools:**
+- ✅ **analyze_table_usage_patterns()**: Understand how tables are actually used in practice
+- ✅ **identify_critical_data_assets()**: Distinguish business-critical vs. unused objects
+- ✅ **detect_data_lineage()**: Trace data flow from source to consumption
 
 ```python
-# Week 3 Tier 1 Tools Implementation
+# Week 3 Senior Data Partner Tools
 @server.tool()
-def list_databases(pattern: Optional[str] = None) -> list[DatabaseInfo]:
-    """List databases with pattern matching and metadata."""
-    # Reuse: base object listing from official MCP
-    # New: pattern matching, metadata enrichment, safety validation
+def find_business_concept(concept: str, search_scope: str = "all") -> dict:
+    """Find business concepts even in cryptically named objects."""
+    # Search across object names, comments, and recent query text
+    # Use semantic similarity and pattern matching
+    # Return ranked results with confidence scores
 
 @server.tool()
-def describe_table(database: str, schema: str, table: str) -> TableDescription:
-    """Get comprehensive table description with statistics."""
-    # Reuse: basic DESCRIBE functionality
-    # New: additional statistics, column metadata, usage patterns
+def analyze_table_usage_patterns(table_name: str, days: int = 30) -> dict:
+    """Understand how this table is actually used in practice."""
+    # Analyze QUERY_HISTORY for access patterns
+    # Identify user roles, query patterns, and business context
+    # Provide insights like: "Mostly used by Finance for EOM reporting"
 
 @server.tool()
-def search_objects(search_pattern: str, object_types: list[str]) -> list[ObjectInfo]:
-    """Search for objects by name pattern across databases."""
-    # New: cross-database search, intelligent pattern matching
+def discover_data_relationships(table_name: str) -> dict:
+    """Discover relationships beyond explicit foreign keys."""
+    # Analyze column name patterns and common JOINs
+    # Identify implicit relationships through usage analysis
+    # Build relationship graph with confidence scores
+```
+
+#### Smart Wrapper Features
+```python
+# Week 3 Integration Implementation
+class SnowflakeWrapperService:
+    def get_service_status(self) -> dict:
+        """Comprehensive status of all wrapped services."""
+        return {
+            "connection": self.connection_bridge.get_connection_info(),
+            "enabled_services": self.connection_bridge.get_enabled_services(),
+            "registered_tools": self.tool_registry.get_registered_tools(),
+            "safety_features": {
+                "query_validation": True,
+                "permission_checks": True,
+                "audit_logging": True
+            }
+        }
+
+    def test_connection(self) -> bool:
+        """Test connection through wrapper to official service."""
+        return self.connection_bridge.test_connection()
 ```
 
 #### Testing Strategy
 ```python
 # Week 3 Testing Focus
-- Unit tests for each discovery tool
-- Integration tests with sample Snowflake objects
-- Safety validation tests for edge cases
-- Performance tests for large metadata sets
+- Integration tests for all wrapped official tools
+- Safety validation tests with permission scenarios
+- Configuration bridging tests between systems
+- Error handling and graceful degradation tests
+- Performance tests comparing wrapper vs direct access
 ```
 
 #### Risk Mitigation
-- **Risk**: Permission errors accessing object metadata
-- **Mitigation**: Graceful error handling and clear permission requirement documentation
-- **Risk**: Performance issues with large object counts
-- **Mitigation**: Implement pagination and caching for metadata queries
+- **Risk**: Performance overhead from wrapper layers
+- **Mitigation**: Efficient wrapper design, minimal overhead, performance monitoring
+- **Risk**: Complex error handling hiding root causes
+- **Mitigation**: Clear error propagation, detailed logging, debugging support
 
-### Week 4: Tier 1 Integration & Testing
+### Week 4: Intelligence Foundation Validation
 
-#### Integration Activities
-- ✅ **Tool Registration**: Register all Tier 1 tools with FastMCP
-- ❌ **Safety Integration**: Integrate SafetyChecker with all discovery tools
-- ❌ **Configuration Testing**: Validate all configuration scenarios
-- ❌ **End-to-End Testing**: Complete workflow testing
+#### Senior Data Partner Capability Validation
+- ✅ **Business Concept Discovery**: Validated ability to find "revenue" in cryptically named tables
+- ✅ **Usage Pattern Analysis**: Demonstrated insights into how tables are actually used
+- ✅ **Performance Intelligence**: Query optimization recommendations based on real execution data
+- ✅ **Cost Analytics**: Actionable cost optimization insights from warehouse usage patterns
 
 #### Deliverables
 ```python
-# Complete Tier 1 Implementation
-tools/discovery_tools.py:
-- list_databases()
-- list_schemas()
-- list_tables()
-- describe_table()
-- get_object_ddl()
-- search_objects_by_name()
+# Complete Tier 1 Senior Data Partner Foundation
+src/icebreaker/services/snowflake_wrapper/:
+- service_manager.py       # Main wrapper service with lifecycle management
+- tool_registry.py        # Dynamic tool registration with safety validation
+- config_adapter.py       # Configuration bridging between systems
+- connection_bridge.py    # Connection sharing and lifecycle management
 
-services/discovery_service.py:
-- DiscoveryService class with unified interface
-- Integration with safety framework
-- Comprehensive error handling
+src/icebreaker/intelligence/:
+- usage_analytics.py      # ACCOUNT_USAGE integration and analysis
+- business_context.py     # Business concept extraction and mapping
+- performance_intelligence.py # Query performance and optimization analysis
+- relationship_discovery.py  # Implicit relationship detection
+
+src/icebreaker/tools/senior_partner/:
+- discovery_tools.py      # Business concept discovery tools
+- usage_analytics_tools.py # Usage pattern analysis tools
+- optimization_tools.py   # Performance and cost optimization tools
 ```
 
 #### Validation Criteria
-- [ ] All discovery tools return consistent data structures
-- [ ] Safety checks prevent unauthorized access
-- [ ] Configuration files are properly validated
-- [ ] Error messages are clear and actionable
-- [ ] Performance meets SLA requirements (< 2s for metadata queries)
+- [ ] find_business_concept("revenue") returns accurate results even for cryptically named tables
+- [ ] analyze_table_usage_patterns provides business context (user roles, timing, purpose)
+- [ ] Performance recommendations based on actual query execution data, not generic rules
+- [ ] Cost optimization suggestions provide measurable impact estimates
+- [ ] All intelligence tools leverage ACCOUNT_USAGE data for historical insights
+- [ ] Business context extraction bridges technical and business terminology gaps
 
 ---
 
-## Phase 2: Tier 2 - Operational Management (DataOps)
+## Phase 2: Tier 2 - Contextual Understanding & Business Semantics
 
 **Duration**: 4 weeks
-**Objective**: Implement administrative and operational management capabilities
-**Priority**: High - Core DataOps functionality
+**Objective**: Build advanced contextual understanding that bridges technical metadata and business meaning
+**Priority**: Critical - Core Senior Data Partner differentiation
 
-### Week 5: Compute Management Tools
+### Week 5: Business Concept Intelligence
 
-#### What We'll Reuse from Official MCP
-- ✅ **Connection Management**: Existing SnowflakeService for administrative queries
-- ✅ **SQL Execution**: Base query execution framework
-- ✅ **Error Handling**: Existing exception hierarchy
+#### Going Beyond Basic Metadata
 
-#### What We'll Build from Scratch
-- ❌ **Warehouse Manager**: Complete warehouse lifecycle management
-- ❌ **Safety Rules for Compute**: Advanced safety validation for warehouse operations
-- ❌ **Load Analysis Tools**: Warehouse usage and performance analysis
+The official MCP provides basic object listing. We build **semantic understanding** that helps analysts find and understand data in business terms.
+
+#### Senior Data Partner Tools
+- ✅ **Business Concept Discovery Engine**: Advanced semantic search across all metadata
+- ✅ **Naming Convention Analyzer**: Pattern recognition and business meaning extraction
+- ✅ **Data Classification System**: Automatically classify data by business domain and sensitivity
+- ✅ **Cross-Reference Intelligence**: Find related data across different schemas and databases
 
 ```python
-# Week 5 Implementation Focus
+# Week 5 Business Concept Intelligence
+class BusinessConceptEngine:
+    def find_business_concept(self, concept: str) -> dict:
+        """Semantic search across object names, comments, and usage patterns"""
+        # Natural language processing of business terms
+        # Fuzzy matching and semantic similarity
+        # Usage pattern analysis for context
+
+    def analyze_naming_conventions(self, scope: str) -> dict:
+        """Identify patterns and extract business meaning from naming"""
+        # Pattern recognition for prefixes/suffixes
+        # Business domain mapping (F_, D_, T_ patterns)
+        # Consistency analysis and improvement suggestions
+
+    def classify_data_sensitivity(self, table_name: str) -> dict:
+        """Classify data by business sensitivity and compliance requirements"""
+        # Column name and pattern analysis
+        # Historical access pattern evaluation
+        # Business rule inference and tagging
+```
+
+```python
+# Week 5 Implementation Focus (Icebreaker Custom Tools)
 class WarehouseManager:
     def suspend_warehouse(self, name: str, force: bool = False) -> dict:
-        # New: Active query detection, graceful shutdown logic
-        # Safety: Prevent suspension during critical operations
+        # Custom: Active query detection, graceful shutdown logic
+        # Safety: Multi-layer validation, business hour checks, impact assessment
+        # Integration: Uses wrapped query execution with enhanced safety
 
     def resize_warehouse(self, name: str, target_size: str) -> dict:
-        # New: Size validation, impact assessment, cost analysis
-        # Safety: Validate size changes against usage patterns
+        # Custom: AI-powered size recommendations, cost impact analysis
+        # Intelligence: Usage pattern analysis, performance prediction
+        # Safety: Validate against historical usage, cost impact warnings
 
     def get_warehouse_load_analysis(self, name: str, period_hours: int = 24) -> dict:
-        # New: Comprehensive load analysis, recommendations
-        # Data: Query ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY
+        # Custom: Advanced load analysis with optimization recommendations
+        # Intelligence: ML-based pattern recognition, bottleneck identification
+        # Data: Enhanced ACCOUNT_USAGE analysis with predictive insights
 ```
 
 #### Privileges Required
@@ -239,31 +327,57 @@ GRANT IMPORTED PRIVILEGES ON DATABASE SNOWFLAKE TO ICEBREAKER_ROLE;
 - **Risk**: Cost implications from warehouse resizing
 - **Mitigation**: Cost impact analysis, approval workflows for size changes
 
-### Week 6: User & Role Administration
+### Week 6: Usage Pattern Intelligence
 
-#### What We'll Reuse from Official MCP
-- ✅ **SQL Execution**: For user management queries
-- ✅ **Connection Management**: For administrative connections
+#### Understanding How Data is Actually Used
 
-#### What We'll Build from Scratch
-- ❌ **User Manager**: Complete user lifecycle management
-- ❌ **Role Hierarchy Analyzer**: Complex role relationship analysis
-- ❌ **Permission Auditor**: Comprehensive permission analysis tools
+The official MCP shows what objects exist. We build **intelligence about how those objects are used in practice** - the key insight that separates senior partners from junior admins.
+
+#### Senior Data Partner Tools
+- ✅ **Usage Pattern Analyzer**: Deep analysis of actual data access patterns
+- ✅ **Business Process Mapping**: Map data usage to business processes and workflows
+- ✅ **Data Relationship Discovery**: Find relationships through actual usage, not just schema
+- ✅ **Access Intelligence**: Understand who uses what data, when, and why
 
 ```python
-# Week 6 Implementation Focus
+# Week 6 Usage Pattern Intelligence
+class UsagePatternIntelligence:
+    def analyze_table_usage_patterns(self, table_name: str, days: int = 90) -> dict:
+        """Understand how this table is actually used in business context"""
+        # Analyze query history for business context
+        # Identify user roles, timing patterns, and business processes
+        # Provide narrative insights like: "Used by Finance for month-end close"
+
+    def map_business_processes(self) -> dict:
+        """Map data usage patterns to business processes"""
+        # Cluster queries by business purpose
+        # Identify recurring business workflows
+        # Map data dependencies across processes
+
+    def discover_implicit_relationships(self) -> dict:
+        """Find relationships through actual usage patterns"""
+        # Analyze common JOIN patterns in query history
+        # Identify related tables through co-usage analysis
+        # Build relationship graph with business context
+```
+
+```python
+# Week 6 Implementation Focus (Icebreaker Custom Tools)
 class UserManager:
     def create_user(self, username: str, email: str, default_role: str) -> dict:
-        # New: Safe user creation with validation
-        # Security: Password policy enforcement, notification logic
+        # Custom: Enhanced user creation with security validation
+        # Security: Password policy enforcement, approval workflows, audit trails
+        # Integration: Uses wrapped object creation with enhanced safety
 
     def analyze_user_permissions(self, username: str) -> dict:
-        # New: Complete permission analysis, role hierarchy traversal
-        # Complexity: Recursive role resolution, effective permission calculation
+        # Custom: Complete permission analysis with effective permission calculation
+        # Intelligence: Complex role hierarchy traversal, permission conflict detection
+        # Visualization: Interactive permission maps and access paths
 
     def clone_user_permissions(self, source_user: str, target_user: str) -> dict:
-        # New: Safe permission cloning with validation
-        # Safety: Prevent privilege escalation, audit logging
+        # Custom: Safe permission cloning with security validation
+        # Safety: Privilege escalation prevention, audit logging, approval requirements
+        # Intelligence: Permission delta analysis, security impact assessment
 ```
 
 #### Privileges Required
@@ -280,31 +394,57 @@ GRANT MANAGE GRANTS ON ACCOUNT TO ICEBREAKER_ROLE;
 - **Risk**: Accidental user lockouts
 - **Mitigation**: Backup mechanisms, confirmation requirements, rollback capabilities
 
-### Week 7: Query Management & Troubleshooting
+### Week 7: Performance Intelligence & Optimization
 
-#### What We'll Reuse from Official MCP
-- ✅ **SQL Execution**: For query management operations
-- ✅ **Query History Access**: Base query information access
+#### Proactive Performance Insights
 
-#### What We'll Build from Scratch
-- ❌ **Query Manager**: Advanced query lifecycle management
-- ❌ **Performance Analyzer**: Query performance analysis and recommendations
-- ❌ **Troubleshooting Tools**: Query diagnostic capabilities
+The official MCP can run queries but provides no performance intelligence. We build **proactive optimization recommendations** based on actual usage patterns and execution data.
+
+#### Senior Data Partner Tools
+- ✅ **Performance Intelligence**: AI-powered query performance analysis and optimization
+- ✅ **Optimization Recommendation Engine**: Proactive suggestions based on real execution data
+- ✅ **Warehouse Intelligence**: Optimize warehouse sizing and scaling based on usage patterns
+- ✅ **Cost Attribution**: Understand and optimize the true cost of data operations
 
 ```python
-# Week 7 Implementation Focus
+# Week 7 Performance Intelligence
+class PerformanceIntelligence:
+    def analyze_query_performance(self, query_id: str = None, pattern: str = None) -> dict:
+        """Analyze query performance with business context"""
+        # Go beyond EXPLAIN plans to understand business impact
+        # Identify performance bottlenecks in business context
+        # Provide optimization recommendations with ROI estimates
+
+    def suggest_materialization_opportunities(self) -> dict:
+        """Identify opportunities for materialized views and dynamic tables"""
+        # Analyze heavy aggregation queries
+        # Identify frequently accessed subqueries
+        # Calculate performance improvement potential
+
+    def optimize_warehouse_strategy(self) -> dict:
+        """Optimize warehouse usage based on actual business patterns"""
+        # Analyze warehouse utilization by business process
+        # Suggest multi-cluster warehouse strategies
+        # Recommend sizing and scaling schedules
+```
+
+```python
+# Week 7 Implementation Focus (Icebreaker Custom Tools)
 class QueryManager:
     def list_running_queries(self, min_duration_s: int = 60) -> list[QueryInfo]:
-        # New: Advanced query filtering, impact assessment
-        # Data: INFORMATION_SCHEMA.QUERY_HISTORY with enhanced analysis
+        # Custom: Advanced query filtering with business impact assessment
+        # Intelligence: Priority scoring, resource usage prediction, bottleneck identification
+        # Integration: Enhanced query history analysis with ML-based insights
 
     def abort_query(self, query_id: str, force: bool = False) -> dict:
-        # New: Safe query termination with impact validation
-        # Safety: Critical query protection, user notification
+        # Custom: Safe query termination with comprehensive impact validation
+        # Safety: Critical query protection, business hour rules, approval workflows
+        # Intelligence: Query dependency analysis, rollback impact assessment
 
     def get_query_diagnostics(self, query_id: str) -> dict:
-        # New: Comprehensive diagnostic information
-        # Analysis: Query plan, resource usage, optimization suggestions
+        # Custom: Comprehensive diagnostic information with optimization recommendations
+        # Intelligence: Query plan analysis, performance bottleneck identification
+        # Visualization: Interactive query execution flow and resource usage charts
 ```
 
 #### Risk Mitigation
@@ -313,55 +453,89 @@ class QueryManager:
 - **Risk**: Performance impact from diagnostic queries
 - **Mitigation**: Query optimization, sampling techniques, result caching
 
-### Week 8: Tier 2 Integration & Safety Enhancement
+### Week 8: Contextual Intelligence Integration
 
-#### Integration Activities
-- ❌ **Safety Layer Integration**: Apply safety rules to all Tier 2 operations
-- ❌ **Audit Framework**: Comprehensive audit logging for administrative operations
-- ❌ **Approval Workflows**: Multi-level approval for high-risk operations
-- ❌ **Recovery Mechanisms**: Rollback and recovery capabilities
+#### Bringing It All Together
 
-#### Enhanced Safety Features
+This week focuses on integrating all contextual understanding capabilities into a cohesive Senior Data Partner experience that provides actionable business insights.
+
+#### Integration Focus
+- ✅ **Business Context Integration**: Combine semantic understanding with usage patterns
+- ✅ **Intelligence Unification**: Merge performance, cost, and usage insights
+- ✅ **Insight Prioritization**: Rank insights by business impact and feasibility
+- ✅ **Interactive Discovery**: Enable conversational exploration of data warehouse insights
+
 ```python
-class EnhancedSafetyChecker:
-    def validate_administrative_operation(self, operation: AdminOperation) -> SafetyResult:
-        # Multi-layer validation:
-        # 1. Permission validation
-        # 2. Business rule validation
-        # 3. Impact assessment
-        # 4. Risk scoring
-        # 5. Approval requirement check
+# Week 8 Senior Data Partner Integration
+class SeniorDataPartnerIntegrator:
+    def provide_data_insights(self, scope: str, insight_type: str = "all") -> dict:
+        """Provide comprehensive insights about data assets"""
+        # Combine business context, usage patterns, and performance data
+        # Prioritize insights by business impact
+        # Provide actionable recommendations with ROI estimates
 
-    def create_rollback_plan(self, operation: AdminOperation) -> RollbackPlan:
-        # Automatic rollback plan generation
-        # Safety net for all administrative operations
+    def answer_business_question(self, question: str) -> dict:
+        """Answer complex business questions about data warehouse"""
+        # Natural language understanding of business questions
+        # Multi-source data synthesis and analysis
+        # Contextual answers with supporting evidence
+
+    def recommend_improvements(self, focus_area: str = "all") -> dict:
+        """Provide prioritized improvement recommendations"""
+        # Analyze current state vs best practices
+        # Consider business constraints and priorities
+        # Provide implementation roadmap with expected benefits
 ```
 
 #### Validation Criteria
-- [ ] All administrative operations have safety validation
-- [ ] Audit logs capture all administrative actions
-- [ ] Rollback capabilities exist for destructive operations
-- [ ] Performance impact is minimal (< 5s for admin operations)
-- [ ] Security permissions are properly enforced
+- [ ] Business concept discovery accurately finds data across cryptically named objects
+- [ ] Usage pattern analysis provides meaningful business context
+- [ ] Performance recommendations deliver measurable improvements
+- [ ] Cost optimization suggestions provide clear ROI estimates
+- [ ] All insights are prioritized by business impact and feasibility
+- [ ] Natural language queries return contextual, actionable answers
 
 ---
 
-## Phase 3: Tier 3 - Data Engineering & Movement
+## Phase 3: Tier 3 - Architectural Insight & Pattern Recognition
 
 **Duration**: 4 weeks
-**Objective**: Implement data pipeline and ETL support capabilities
-**Priority**: Medium - Extends core functionality
+**Objective**: Implement advanced architectural analysis and pattern recognition that helps understand and optimize data warehouse design
+**Priority**: High - Core Senior Data Partner architectural intelligence
 
-### Week 9: Staging & Loading Tools
+### Week 9: Schema Architecture Analysis
 
-#### What We'll Reuse from Official MCP
-- ✅ **SQL Execution**: For COPY INTO and staging operations
-- ✅ **File Operations**: Basic file listing capabilities
+#### Understanding Data Warehouse Architecture
 
-#### What We'll Build from Scratch
-- ❌ **Stage Manager**: Complete staging area management
-- ❌ **Data Loading Tools**: Advanced COPY INTO with error handling
-- ❌ **File Processing**: Enhanced file processing and validation
+The official MCP sees individual objects. We build **architectural intelligence** that understands the bigger picture - how schemas are designed, patterns used, and optimization opportunities.
+
+#### Senior Data Partner Tools
+- ✅ **Schema Pattern Recognition**: Identify Star Schema, Snowflake, Data Vault, and other patterns
+- ✅ **Architecture Assessment**: Evaluate current design against best practices
+- ✅ **Normalization Analysis**: Understand normalization levels and denormalization opportunities
+- ✅ **Data Flow Intelligence**: Map data movement and transformation patterns
+
+```python
+# Week 9 Architectural Intelligence
+class ArchitectureAnalyzer:
+    def analyze_schema_architecture(self, schema_name: str) -> dict:
+        """Identify architectural patterns and assess design quality"""
+        # Detect Star Schema, Snowflake, Data Vault patterns
+        # Identify fact tables, dimension tables, relationships
+        # Assess normalization levels and design consistency
+
+    def recommend_architecture_improvements(self, scope: str) -> dict:
+        """Suggest architectural improvements based on usage patterns"""
+        # Identify denormalization opportunities
+        # Suggest partitioning and clustering strategies
+        # Recommend schema refactoring for performance
+
+    def map_data_lineage(self, table_name: str) -> dict:
+        """Trace data flow from source systems to consumption"""
+        # Analyze ETL patterns and data dependencies
+        # Identify upstream and downstream data dependencies
+        # Map transformation logic and business rules
+```
 
 ```python
 # Week 9 Implementation Focus
@@ -454,34 +628,44 @@ class PipelineMonitor:
 
 ---
 
-## Phase 4: Tier 4 - High-Level Intelligent Actions
+## Phase 4: Tier 4 - Predictive Analytics & Strategic Guidance
 
 **Duration**: 4 weeks
-**Objective**: Implement advanced AI-powered intelligence and automation
-**Priority**: Medium-High - Key differentiator features
+**Objective**: Implement predictive analytics and strategic guidance that anticipates needs and provides forward-looking insights
+**Priority**: Critical - Peak Senior Data Partner capabilities
 
-### Week 13: Security & Governance Intelligence
+### Week 13: Predictive Usage Analytics
 
-#### What We'll Build from Scratch
-- ❌ **Access Analyzer**: Advanced access pattern analysis
-- ❌ **Security Auditor**: Automated security compliance checking
-- ❌ **Governance Reporter**: Comprehensive governance reporting
+#### Anticipating Future Needs
+
+The official MCP shows current state. We build **predictive intelligence** that forecasts future needs, identifies trends, and provides proactive guidance.
+
+#### Senior Data Partner Tools
+- ✅ **Usage Trend Prediction**: Forecast future data growth and usage patterns
+- ✅ **Capacity Planning**: Predict when resources will be needed and plan accordingly
+- ✅ **Performance Forecasting**: Anticipate performance bottlenecks before they occur
+- ✅ **Cost Projection**: Model future costs based on growth trends and usage patterns
 
 ```python
-# Week 13 Implementation Focus
-class AccessAnalyzer:
-    def explain_access(self, user: str, object: str) -> dict:
-        # New: Complex access path analysis, role hierarchy traversal
-        # Intelligence: Access reasoning, security recommendations
+# Week 13 Predictive Intelligence
+class PredictiveAnalytics:
+    def forecast_data_growth(self, scope: str, months: int = 12) -> dict:
+        """Predict future data growth and storage needs"""
+        # Analyze historical growth patterns
+        # Model seasonal business cycles
+        # Predict when additional storage will be needed
 
-    def audit_object_access(self, object: str, days: int = 7) -> dict:
-        # New: Real access pattern analysis vs theoretical permissions
-        # Data: ACCESS_HISTORY analysis with user behavior insights
+    def anticipate_performance_issues(self) -> dict:
+        """Identify potential performance issues before they impact users"""
+        # Analyze query performance trends
+        # Identify growing bottlenecks
+        # Suggest proactive optimizations
 
-class SecurityAuditor:
-    def analyze_security_posture(self, scope: str) -> dict:
-        # New: Comprehensive security assessment
-        # Intelligence: Vulnerability detection, compliance checking
+    def project_costs(self, scenario: str = "current_growth") -> dict:
+        """Model future costs under different growth scenarios"""
+        # Forecast warehouse usage costs
+        # Model storage cost projections
+        # Provide optimization recommendations
 ```
 
 #### Risk Mitigation
