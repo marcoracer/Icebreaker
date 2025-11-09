@@ -52,7 +52,7 @@ icebreaker_mcp/
 ```bash
 # Core dependencies (reused from official MCP)
 pip install fastmcp>=2.8.1
-pip install snowflake-connector-python>=3.15.0
+pip install snowflake-connector-python>=4.0.0
 pip install sqlglot>=27.8.0
 
 # Icebreaker-specific additions
