@@ -38,5 +38,9 @@ class PermissionDeniedError(IcebreakerError):
     """Operation not permitted due to insufficient permissions (403)."""
 
 
+class ConnectionError(IcebreakerError):
+    """Failed to establish or maintain connection (503)."""
+
+
 class ConfigurationError(IcebreakerError):
     """Invalid configuration provided (500)."""
