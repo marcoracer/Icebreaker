@@ -5,63 +5,72 @@
 discovery:
   enabled: true
   tools:
-    - list_databases
-    - list_schemas
-    - list_tables
-    - describe_table
-    - get_object_ddl
-    - search_objects
+    - "*"
 
 # Tier 2: Operational Services (Phase 2)
 operational:
-  enabled: false  # Enable in Phase 2
-  safety_checks: strict
+  enabled: true   # All services enabled for full availability
+  safety_checks: normal
   tools:
-    - suspend_warehouse
-    - resume_warehouse
-    - resize_warehouse
-    - create_user
-    - manage_roles
+    - "*"
 
 # Tier 3: Engineering Services (Phase 3)
 engineering:
-  enabled: false  # Enable in Phase 3
+  enabled: true   # All services enabled for full availability
   tools:
-    - load_table_from_stage
-    - create_clone
-    - refresh_dynamic_table
+    - "*"
 
 # Tier 4: Intelligence Services (Phase 4)
 intelligence:
-  enabled: false  # Enable in Phase 4
+  enabled: true   # All services enabled for full availability
   tools:
-    - diagnose_slow_query
-    - suggest_clustering_keys
-    - analyze_cost_drivers
-    - explain_access
+    - "*"
 
 # SQL permissions
 sql_statement_permissions:
-  # Read permissions (Tier 1)
+  # Read permissions (Tier 1) - All read operations allowed
   allowed:
+    - "*"
     - SELECT
     - SHOW
     - DESCRIBE
     - GET_DDL
     - USE
     - WITH
+    - LIST
+    - GET
 
-  # Administrative permissions (Tier 2+)
+  # Administrative permissions (Tier 2+) - All admin operations allowed
   administrative_allowed:
+    - "*"
     - ALTER WAREHOUSE
     - CREATE USER
     - ALTER USER
     - GRANT ROLE
     - SYSTEM$ABORT_QUERY
+    - CREATE DATABASE
+    - CREATE SCHEMA
+    - CREATE TABLE
+    - CREATE VIEW
+    - CREATE WAREHOUSE
+    - ALTER DATABASE
+    - ALTER SCHEMA
+    - ALTER TABLE
+    - INSERT
+    - UPDATE
+    - DELETE
+    - MERGE
+    - COPY INTO
+    - PUT
+    - GET
 
-  # Always disallowed
+  # Always disallowed - Only truly dangerous operations
   disallowed:
     - DROP DATABASE
     - DROP SCHEMA
     - DROP WAREHOUSE
+    - DROP TABLE
+    - DROP VIEW
+    - DROP USER
+    - DROP ROLE
     - UNSUPPORTED
