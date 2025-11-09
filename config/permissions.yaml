@@ -1,0 +1,51 @@
+# Permission matrix for Icebreaker MCP Server
+# Defines which roles can access which tools and operations
+
+# Role-based access control
+roles:
+  # Read-only role for data analysts
+  analyst:
+    allowed_tools:
+      - list_databases
+      - list_schemas
+      - list_tables
+      - describe_table
+      - get_object_ddl
+      - search_objects
+      - execute_read_query
+    allowed_operations:
+      - READ
+
+  # DataOps role for operational tasks
+  dataops:
+    allowed_tools:
+      - "*"
+    allowed_operations:
+      - READ
+      - WAREHOUSE_MANAGE
+      - USER_MANAGE_BASIC
+
+  # Admin role for full administrative access
+  admin:
+    allowed_tools:
+      - "*"
+    allowed_operations:
+      - "*"
+
+# Tool-specific permissions
+tool_permissions:
+  suspend_warehouse:
+    required_roles: ["dataops", "admin"]
+    safety_checks: true
+    requires_confirmation: true
+
+  create_user:
+    required_roles: ["admin"]
+    safety_checks: true
+    requires_approval: true
+
+  drop_table:
+    required_roles: ["admin"]
+    safety_checks: true
+    requires_approval: true
+    blocked_in_safe_mode: true
