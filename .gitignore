@@ -205,3 +205,17 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# uv
+.uv_cache/
+
+# Snowflake credentials (sensitive)
+*.pem
+*.key
+snowflake_private_key.pem
+*_rsa_key*
+
+# Icebreaker specific
+config/local/
+logs/
+*.log
